@@ -11,7 +11,7 @@ latestAsset=$(
 )
 
 if [[ -z "${latestAsset}" ]]; then
-  log "ERROR: latest release of Catserver is missing universal.jar asset"
+  logError "Latest release of Catserver is missing universal.jar asset"
   exit 1
 fi
 
@@ -28,5 +28,6 @@ if [ ! -f ${SERVER} ]; then
 fi
 
 export FAMILY=HYBRID
+export HYBRIDTYPE=forge
 
 exec "${SCRIPTS:-/}start-spiget" "$@"

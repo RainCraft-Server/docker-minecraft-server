@@ -21,12 +21,23 @@ set -eu
 : "${CF_DOWNLOADS_REPO=$([ -d /downloads ] && echo '/downloads' || echo '')}"
 : "${CF_MODPACK_MANIFEST:=}"
 : "${CF_API_CACHE_DEFAULT_TTL:=}" # as ISO-8601 duration, such as P2D or PT12H
+: "${CF_API_KEY_FILE:=}" # Path to file containing CurseForge API key
 
 resultsFile=/data/.install-curseforge.env
 
+if [[ -n ${CF_API_KEY_FILE} ]]; then
+  if [[ -r "${CF_API_KEY_FILE}" ]]; then
+    CF_API_KEY="$(cat "${CF_API_KEY_FILE}")"
+    export CF_API_KEY
+  else
+    logError "CF_API_KEY_FILE is not readable: ${CF_API_KEY_FILE}"
+    exit 1
+  fi
+fi
+
 isDebugging && set -x
 
-ensureRemoveAllModsOff "MOD_PLATFORM=AUTO_CURSEFORGE"
+ensureRemoveAllModsOff "MODPACK_PLATFORM=AUTO_CURSEFORGE"
 
 args=(
   --results-file="$resultsFile"
@@ -57,15 +68,11 @@ setArg --exclude-include-file CF_EXCLUDE_INCLUDE_FILE
 setArg --downloads-repo CF_DOWNLOADS_REPO
 
 if ! mc-image-helper install-curseforge "${args[@]}"; then
-    log "ERROR failed to auto-install CurseForge modpack"
+    logError "Failed to auto-install CurseForge modpack"
     exit 1
 fi
 
-# grab SERVER, TYPE, VERSION and export it
-set -a
-# shellcheck disable=SC1090
-source "${resultsFile}"
-set +a
+applyResultsFile ${resultsFile}
 resolveFamily
 
 exec "${SCRIPTS:-/}start-setupWorld" "$@"

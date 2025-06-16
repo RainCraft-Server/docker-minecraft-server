@@ -197,14 +197,34 @@ New to [22W42A](https://www.minecraft.net/en-us/article/minecraft-snapshot-22w42
 
 ### Server icon
 
-A server icon can be configured using the `ICON` variable. The image will be automatically
-downloaded, scaled, and converted from any other image format:
+A server icon can be configured by setting the `ICON` variable to a URL to download or a container path. The image will be automatically downloaded (if a URL), scaled, and converted from any other image format:
 
+!!! example
+
+    Using `docker run`:
+    
+    ```
     docker run -d -e ICON=http://..../some/image.png ...
+    ```
+    
+    In compose file:
+    
+    ```yaml
+    environment:
+      ICON: http://..../some/image.png
+    ```
+    
+    Using a file from host filesystem:
+    
+    ```yaml
+    environment:
+      ICON: /icon.png
+      OVERRIDE_ICON: true
+    volumes:
+      ./icon.png:/icon.png
+    ```
 
-The server icon which has been set doesn't get overridden by default. It can be changed and overridden by setting `OVERRIDE_ICON` to `TRUE`.
-
-    docker run -d -e ICON=http://..../some/other/image.png -e OVERRIDE_ICON=TRUE...
+By default an existing `server-icon.png` file will not be replaced, that can be changed by setting `OVERRIDE_ICON` to "true".
 
 ### RCON
 
@@ -376,7 +396,7 @@ be configured by setting `LEVEL_TYPE` to [an expected type listed here](https://
 
 For some of the level types, `GENERATOR_SETTINGS` can be used to further customize the world generation.
 
-To configure the `GENERATOR_SEETINGS` you need to add the appropriate `GeneratorOptions` JSON configuration. In the case of a superflat world, you may omit the `flat_world_options`.
+To configure the `GENERATOR_SETTINGS` you need to add the appropriate `GeneratorOptions` JSON configuration. In the case of a superflat world, you may omit the `flat_world_options`.
 
 The layers are applied from -64 and up and are added in the order of the list
 

@@ -24,14 +24,9 @@ docker run -d -v /path/on/host:/data \
 
 ## Running as alternate user/group ID
 
-By default, the container will switch to user ID 1000 and group ID 1000;
-however, you can override those values by setting `UID` and/or `GID` as environmental entries, during the `docker run` command.
+By default, the container will switch to and run the Minecraft server as user ID 1000 and group ID 1000; however, that can be changed by setting the environment variables `UID` and `GID`.
 
-    -e UID=1234
-    -e GID=1234
-
-The container will also skip user switching if the `--user`/`-u` argument
-is passed to `docker run`.
+The startup will also skip user switching if the `--user`/`-u` argument is passed to `docker run` or `user` is set on the compose service.
 
 ## Extra Arguments
 
@@ -54,6 +49,16 @@ To allow time for players to finish what they're doing during a graceful server 
     The Docker stop grace period must be increased to a value longer than the announce delay. The value to use that is longer than announce delay will vary based upon the amount of time it takes for final world data saving. If the container exits with exit code 137, then that indicates a longer grace period is needed. 
     
     The grace period can be increased using [the -t option on docker-compose down](https://docs.docker.com/compose/reference/down/) or set the [stop_grace_period](https://docs.docker.com/compose/compose-file/05-services/#stop_grace_period) in the compose file.
+
+The `STOP_SERVER_ANNOUNCE_DELAY` can be bypassed by sending a `SIGUSR1` signal to the `mc-server-runner` process.
+
+`docker`:
+
+        docker stop --signal SIGUSR1 mc
+
+`docker compose`:
+
+        docker compose kill --signal SIGUSR1
 
 ## Configuration Options for Minecraft Server Health Monitoring
 

@@ -6,6 +6,8 @@ To allow for the selection of experimental builds, set `PAPER_CHANNEL` to "exper
 
 !!! example
 
+    Using `docker run` command line
+    
     ```
     docker run ... -e TYPE=PAPER ... 
     
@@ -14,6 +16,26 @@ To allow for the selection of experimental builds, set `PAPER_CHANNEL` to "exper
     docker run ... -e TYPE=PAPER -e VERSION=1.20.6 -e PAPER_BUILD=140 ... 
     
     docker run ... -e TYPE=PAPER -e PAPER_CHANNEL=experimental ... 
+    ```
+    
+    Using a compose file:
+    
+    ```yaml
+    environment:
+      TYPE: PAPER
+    ```
+    
+    ```yaml
+    environment:
+      TYPE: PAPER
+      VERSION: 1.20.6
+      PAPER_BUILD: 140
+    ```
+    
+    ```yaml
+    environment:
+      TYPE: PAPER
+      PAPER_CHANNEL: experimental
     ```
 
 !!! tip
@@ -62,6 +84,23 @@ Extra variables:
 - `FORCE_REDOWNLOAD=false` : set to true to force the located server jar to be re-downloaded
 - `USE_FLARE_FLAGS=false` : set to true to add appropriate flags for the built-in [Flare](https://blog.airplane.gg/flare) profiler
 - `PURPUR_DOWNLOAD_URL=<url>` : set URL to download Purpur from custom URL.
+
+### Leaf
+
+A [Leaf server](https://www.leafmc.one/) is a Paper fork focused on performance improvements and low-level optimizations for smoother gameplay.
+
+To use a Leaf server, set the environment variable `TYPE` to `"LEAF"`.
+
+    -e TYPE=LEAF
+
+!!! note
+
+    The `VERSION` variable is used to select the Minecraft version to run.  
+    To specify a particular Leaf build, use `LEAF_BUILD`.  
+
+By default the latest build will be used; however, a specific build number can be selected by setting `LEAF_BUILD`, such as
+
+    -e VERSION=1.21.4 -e LEAF_BUILD=441
 
 ### Folia
 
